@@ -48,7 +48,7 @@ if uploaded_file is not None:
 
         # Parámetros básicos
         k = st.sidebar.slider("2. Número de clusters (k):", 1, 10, 3)
-        n_components = st.sidebar.radio("3. Visualización PCA:", [2, 3], index=0)
+        n_components = st.sidebar.radio("3. Visualización PCA:", [2D, 3], index=0)
 
         # --- Parámetros Avanzados de K-Means (NUEVO) ---
         st.sidebar.subheader("Parámetros K-Means")
