@@ -52,41 +52,39 @@ if uploaded_file is not None:
 
         # --- Parámetros Avanzados de K-Means (NUEVO) ---
         st.sidebar.subheader("Parámetros K-Means")
-
+        
         kmeans_init = st.sidebar.selectbox(
             "4. Método de Inicialización (init):",
             ("k-means++", "random"),
             index=0,
-            help="k-means++: Selecciona centros iniciales de forma inteligente. random: selecciona centros al azar.",
+            help="k-means++: Selecciona centros iniciales de forma inteligente. random: selecciona centros al azar."
         )
 
         kmeans_max_iter = st.sidebar.slider(
             "5. Máximo de Iteraciones (max_iter):",
-            50,
-            1000,
-            300,
-            50,
-            help="Número máximo de veces que el algoritmo reajustará los centroides.",
+            50, 1000, 300, 50,
+            help="Número máximo de veces que el algoritmo reajustará los centroides."
         )
 
         kmeans_n_init = st.sidebar.slider(
             "6. Número de ejecuciones con distintas semillas (n_init):",
-            1,
-            50,
-            10,
-            help="Número de veces que el algoritmo K-Means se ejecutará con diferentes inicializaciones de centroides. El mejor resultado es el final.",
+            1, 50, 10,
+            help="Número de veces que el algoritmo K-Means se ejecutará con diferentes inicializaciones de centroides. El mejor resultado es el final."
         )
 
         # Control para Random State
         use_random_state = st.sidebar.checkbox(
-            "7. Usar Semilla Fija (Random State)",
+            "7. Usar Semilla Fija (Random State)", 
             value=True,
-            help="Fija el valor para asegurar la reproducibilidad de los resultados.",
+            help="Fija el valor para asegurar la reproducibilidad de los resultados."
         )
         random_state_val = None
         if use_random_state:
             random_state_val = st.sidebar.number_input(
-                "Valor de la Semilla (Random State):", min_value=0, value=42, step=1
+                "Valor de la Semilla (Random State):",
+                min_value=0,
+                value=42,
+                step=1
             )
         # --------------------------------------------------
 
@@ -101,17 +99,15 @@ if uploaded_file is not None:
             random_state=random_state_val,
             # No se usa 'algorithm' ni 'tol' por defecto, pero se podrían añadir aquí.
         )
-
+        
         # Manejo de excepción por si el número de clusters es mayor que el número de muestras
         try:
             kmeans.fit(X)
             data["Cluster"] = kmeans.labels_
         except ValueError as e:
-            st.error(
-                f"Error al ejecutar K-Means: {e}. Asegúrate de que el número de clusters (k={k}) no exceda el número de filas en tus datos."
-            )
-            return  # Detener la ejecución si hay error
-
+            st.error(f"Error al ejecutar K-Means: {e}. Asegúrate de que el número de clusters (k={k}) no exceda el número de filas en tus datos.")
+            st.stop() # <--- CORRECCIÓN: Usar st.stop() para detener la ejecución en Streamlit
+            
         # --- PCA ---
         pca = PCA(n_components=n_components)
         X_pca = pca.fit_transform(X)
@@ -177,7 +173,7 @@ if uploaded_file is not None:
         if st.button("Calcular Inercia para K=1 a K=10"):
             inertias = []
             K_range = range(1, min(11, len(X) + 1))
-
+            
             # Reutilizamos los nuevos parámetros de K-Means para el cálculo del Codo
             for i in K_range:
                 # El n_clusters es la variable de la iteración (i)
